@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW (Versão de avaliação) -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="46.6543mm" height="33.3187mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 4665.42 3331.86"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .str0 {stroke:black;stroke-width:158.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:22.9256}
+    .fil3 {fill:none}
+    .fil4 {fill:#10B981}
+    .fil1 {fill:#14B8A6}
+    .fil0 {fill:#2DD4BF}
+    .fil5 {fill:#34D399}
+    .fil2 {fill:white}
+   ]]>
+  </style>
+ </defs>
+ <g id="Camada_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g id="_655678088">
+   <path class="fil0 str0" d="M79.38 2939.55l0 -1835.28 1303.42 0 471.47 995.47 0 1152.74 -160.25 0c0,0 -82.63,-54.08 -84.13,-91.64 -1.5,-37.56 -55.59,-49.58 -88.64,-49.58 -33.05,0 -1441.87,0 -1441.87,0l0 -171.71z"/>
+   <path class="fil1 str0" d="M3647.56 2939.55l0 -1835.28 -1303.42 0 -471.47 995.47 0 1152.74 160.25 0c0,0 82.63,-54.08 84.13,-91.64 1.5,-37.56 55.59,-49.58 88.64,-49.58 33.05,0 1441.87,0 1441.87,0l0 -171.71z"/>
+   <path class="fil2 str0" d="M1323.52 2763.51l-946.21 0 0 -1881.16 943.49 0c0,0 292.87,-2.35 534.95,278.58l0 1869.11c0,0 -147.56,-227.15 -532.23,-266.53z"/>
+   <path class="fil2 str0" d="M2403.42 2763.51l946.21 0 0 -1881.16 -943.49 0c0,0 -292.87,-2.35 -534.95,278.58l0 1869.11c0,0 147.56,-227.15 532.23,-266.53z"/>
+   <line class="fil3 str0" x1="719.49" y1="1439.52" x2="1460.61" y2= "1439.52" />
+   <line class="fil3 str0" x1="719.49" y1="1806.55" x2="1460.61" y2= "1806.55" />
+   <line class="fil3 str0" x1="719.49" y1="2166.52" x2="1282.08" y2= "2166.52" />
+   <path class="fil4 str0" d="M2335.91 851.41l0 528.28c0,0 237.56,400.43 708.4,400.43l224.09 0 332.91 0c0,0 325.91,-41.38 568.11,-376.27l0 -568.11 -871.28 -261.97 -962.23 277.64z"/>
+   <path class="fil4 str0" d="M4163.52 901.38l0 964.34c0,0 -147.64,73.29 -147.64,145.39 0,72.1 0,330.82 0,330.82l322.34 0 0 -337.18c0,0 2.25,-156.87 -156.86,-156.87l0 -946.5 -17.84 0z"/>
+   <polygon class="fil5 str0" points="1991.51,692.49 3260.13,79.39 4586.05,675.52 3281.37,1298.93 "/>
+   <line class="fil3 str0" x1="3300.04" y1="640.86" x2="3960.52" y2= "974.42" />
+  </g>
+ </g>
+</svg>

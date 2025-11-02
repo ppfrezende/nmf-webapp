@@ -212,10 +212,11 @@ export function CreateStudySessionFormDialog({
         <DialogHeader>
           <DialogTitle>Sessão de estudo</DialogTitle>
           <DialogDescription className="flex flex-col gap-1 text-xs">
-            <span>Aqui você pode cadastrar uma sessão de estudos.</span>
             <span>
-              Informe a disciplina, o tópico e outras informações abaixo:
+              Ligue o cronômetro do seu PC, estude e só depois volte aqui para
+              informar a disciplina, o tópico e outras informações.
             </span>
+            <span>Aqui você pode cadastrar uma sessão de estudos.</span>
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

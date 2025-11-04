@@ -35,6 +35,32 @@ import { DisciplinesChartStats } from './_components/disciplines-chart-stats'
 import { ProjectStatsTable } from './_components/project-stats-table'
 import { PerformanceBadge } from '@/components/ui/performance-percentage'
 import { BreadcrumbTail } from '@/components/ui/breadcumb-tail'
+import { useEffect, useState } from 'react'
+import { StudyCalendar } from './_components/study-sessions-days-calendar'
+import {
+  getStudySessionsByProject,
+  type GetStudySessionsByProjectResponse,
+} from '@/hooks/projects/use-studied-topics'
+
+function TimeBox({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="flex w-14 flex-col items-center rounded-xl bg-gray-800 p-2 text-white">
+      <span className="text-2xl font-bold">{value}</span>
+      <span className="text-xs text-gray-400">{label}</span>
+    </div>
+  )
+}
+
+function getTimeRemaining(examDate?: Date) {
+  if (!examDate) return null
+  const total = Date.parse(examDate.toString()) - Date.now()
+  const seconds = Math.floor((total / 1000) % 60)
+  const minutes = Math.floor((total / 1000 / 60) % 60)
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24)
+  const days = Math.floor(total / (1000 * 60 * 60 * 24))
+
+  return { total, days, hours, minutes, seconds }
+}
 
 function ProjectPage() {
   const searchParams = useSearchParams()
@@ -73,6 +99,25 @@ function ProjectPage() {
         : Promise.reject(new Error('Invalid or undefined slug')),
   }) as UseQueryResult<TotalProjectStats, unknown>
 
+  const { data: studySessionsByProject } = useQuery({
+    queryKey: ['study-sessions-by-project', slug],
+    queryFn: () =>
+      safeSlug
+        ? getStudySessionsByProject(safeSlug)
+        : Promise.reject(new Error('Invalid or undefined slug')),
+  }) as UseQueryResult<GetStudySessionsByProjectResponse, unknown>
+
+  const [timeLeft, setTimeLeft] = useState(getTimeRemaining(data?.examDate))
+
+  useEffect(() => {
+    if (data && data.examDate) {
+      const timer = setInterval(() => {
+        setTimeLeft(getTimeRemaining(data.examDate))
+      }, 1000)
+      return () => clearInterval(timer)
+    }
+  }, [data])
+
   return (
     <>
       {data && (
@@ -91,11 +136,26 @@ function ProjectPage() {
                       INFORMAÇÕES GERAIS
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 items-center">
+                  <CardContent className="flex flex-col gap-4">
+                    <div className="grid grid-cols-2 items-center gap-2">
                       <span className="justify-self-start text-xs">Banca:</span>
                       <span className="justify-self-center font-medium">
                         {data.board}
+                      </span>
+                      <span className="justify-self-start text-xs">
+                        Data da prova:
+                      </span>
+                      <span className="justify-self-center font-medium">
+                        {data.examDate === null ? (
+                          <Badge variant="destructive">Não definida</Badge>
+                        ) : (
+                          new Date(data.examDate!).toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            timeZone: 'UTC',
+                          })
+                        )}
                       </span>
                       <span className="justify-self-start text-xs">
                         Status:
@@ -125,6 +185,21 @@ function ProjectPage() {
                                 : 'Erro'}
                       </Badge>
                     </div>
+                    {timeLeft &&
+                      (timeLeft.total <= 0 ? (
+                        <div className="flex items-center justify-center rounded-lg bg-secondary p-2 dark:bg-secondary">
+                          <span className="text-2xl font-semibold text-primary">
+                            Boa prova!
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2 py-4 text-center">
+                          <TimeBox value={timeLeft.days} label="dias" />
+                          <TimeBox value={timeLeft.hours} label="h" />
+                          <TimeBox value={timeLeft.minutes} label="min" />
+                          <TimeBox value={timeLeft.seconds} label="s" />
+                        </div>
+                      ))}
                   </CardContent>
                   <CardFooter className="grid grid-cols-2 gap-2">
                     <ProjectDetailsDialog data={data} />
@@ -150,7 +225,14 @@ function ProjectPage() {
                   </CardFooter>
                 </Card>
 
-                <div className="col-span-1 md:col-span-6">
+                <div className="col-span-1 md:col-span-2">
+                  {studySessionsByProject && (
+                    <StudyCalendar
+                      sessions={studySessionsByProject.study_sessions}
+                    />
+                  )}
+                </div>
+                <div className="col-span-1 md:col-span-4">
                   {totalDisciplinesStatsData && (
                     <DisciplinesChartStats
                       disciplines={totalDisciplinesStatsData}

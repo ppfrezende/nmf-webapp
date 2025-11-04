@@ -13,7 +13,7 @@ export type ApiStudySession = {
   questionStatus?: boolean
   totalStudingDurationSec?: number
   notes?: string | null
-  viewAt?: string | null
+  viewAt: string
   studyMethod?: string | null
 }
 
@@ -84,6 +84,11 @@ export type GetStudiedTopicsByCycleResponse = {
   unstudiedTopics: UiTopic[]
 }
 
+export type GetStudySessionsByProjectResponse = {
+  study_sessions: ApiStudySession[]
+  total_count: number
+}
+
 export async function getStudiedTopicsByCycle(
   projectId: string,
   cycleId: string
@@ -134,8 +139,6 @@ export async function getStudySession(
     `/projects/${projectId}/study-session/${studySessionId}`
   )
 
-  console.log(data)
-
   return {
     id: data.id,
     scanningReadingDurationSec: data.scanningReadingDurationSec,
@@ -152,5 +155,39 @@ export async function getStudySession(
     viewAt: data.viewAt,
     studyMethod: data.studyMethod,
     topic: data.topic.title,
+  }
+}
+
+export async function getStudySessionsByProject(
+  projectId: string
+): Promise<GetStudySessionsByProjectResponse> {
+  const { headers, data } = await api.get(
+    `/projects/${projectId}/study-sessions`
+  )
+
+  const total_count = Number(headers['x-total-count'])
+
+  console.log(data)
+
+  return {
+    study_sessions: data.study_sessions.map(
+      (study_session: ApiStudySession) => ({
+        id: study_session.id,
+        scanningReadingDurationSec: study_session.scanningReadingDurationSec,
+        skimmingReadingDurationSec: study_session.skimmingReadingDurationSec,
+        pagesReaded: study_session.pagesReaded,
+        theoryStatus: study_session.theoryStatus,
+        rightQuestions: study_session.rightQuestions,
+        wrongQuestions: study_session.wrongQuestions,
+        performancePercentage: study_session.performancePercentage,
+        questionsDurationSec: study_session.questionsDurationSec,
+        questionStatus: study_session.questionStatus,
+        totalStudingDurationSec: study_session.totalStudingDurationSec,
+        notes: study_session.notes,
+        viewAt: study_session.viewAt,
+        studyMethod: study_session.studyMethod,
+      })
+    ),
+    total_count,
   }
 }

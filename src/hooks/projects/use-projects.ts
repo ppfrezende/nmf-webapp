@@ -35,6 +35,7 @@ export type Project = {
   id: string
   title: string
   board?: string
+  examDate?: Date
   status: string
   createdAt: string
 
@@ -77,6 +78,7 @@ export const getProjects = async (
       id: project.id,
       title: project.title,
       board: project.board,
+      examDate: project.examDate,
       status: project.status,
       createdAt: project.createdAt,
     }
@@ -96,6 +98,7 @@ export async function getProject(id: string): Promise<Project> {
     id: data.project.id,
     title: data.project.title,
     board: data.project.board,
+    examDate: data.project.examDate,
     status: data.project.status,
     disciplines: data.project.disciplines.map((discipline: Discipline) => ({
       id: discipline.id,

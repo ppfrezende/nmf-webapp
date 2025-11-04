@@ -6,6 +6,10 @@ Designed for speed, scalability, and a clean, distraction-free learning experien
 
 ![Sign-in Page](/public/sign-in-page.png 'SignIn Page')
 
+![Project Page Dark](/public/project-page-dark.png 'Project Page Dark')
+
+![Project Page Light](/public/project-page-light.png 'Project Page Light')
+
 #### 🚀 Tech Stack
 
 - Next.js (App Router)

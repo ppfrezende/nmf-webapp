@@ -4,14 +4,16 @@ import { z } from 'zod'
 
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/services/api-client'
 import { useToast } from '@/hooks/use-toast'
 import { useEffect, useRef, useState } from 'react'
-import { dirtyValues } from '@/lib/utils'
+import { cn, dirtyValues } from '@/lib/utils'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import type { Project } from '@/hooks/projects/use-projects'
 import {
   Select,
@@ -21,7 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Edit } from 'lucide-react'
+import { CalendarIcon, Edit } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -32,6 +34,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
 
 interface ProjectDetailsProps {
   data: Project
@@ -40,17 +48,26 @@ interface ProjectDetailsProps {
 type UpdateProjectFormData = {
   title?: string
   board?: string
+  examDate?: Date
   status?: string
 }
 
 export default function ProjectDetailsDialog({ data }: ProjectDetailsProps) {
   const [open, setOpen] = useState(false)
+  const [openCalendar, setOpenCalendar] = useState(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()
 
   const updateProjectFormSchema = z.object({
     title: z.string().min(1, { message: 'Campo obrigatório' }).optional(),
     board: z.string().min(1, { message: 'Campo obrigatório' }).optional(),
+    examDate: z
+      .preprocess(
+        (v) =>
+          typeof v === 'string' || typeof v === 'number' ? new Date(v) : v,
+        z.date()
+      )
+      .optional(),
     status: z.string().min(1, { message: 'Campo obrigatório' }).optional(),
   })
   const form = useForm<z.infer<typeof updateProjectFormSchema>>({
@@ -58,6 +75,7 @@ export default function ProjectDetailsDialog({ data }: ProjectDetailsProps) {
     defaultValues: {
       title: data.title,
       board: data.board,
+      examDate: data.examDate,
       status: data.status,
     },
     resolver: zodResolver(updateProjectFormSchema),
@@ -93,6 +111,7 @@ export default function ProjectDetailsDialog({ data }: ProjectDetailsProps) {
       Readonly<{
         title?: boolean
         board?: boolean
+        examDate?: boolean
         status?: boolean
       }>
     >
@@ -107,6 +126,7 @@ export default function ProjectDetailsDialog({ data }: ProjectDetailsProps) {
       form.reset({
         title: data.title,
         status: data.status,
+        examDate: data.examDate,
         board: data.board,
       })
     }
@@ -116,7 +136,6 @@ export default function ProjectDetailsDialog({ data }: ProjectDetailsProps) {
     values
   ) => {
     const modifiedValues = dirtyValues(dirtyFields.current, values)
-
     await updateProject.mutateAsync(modifiedValues)
   }
 
@@ -131,9 +150,9 @@ export default function ProjectDetailsDialog({ data }: ProjectDetailsProps) {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Editar</DialogTitle>
+              <DialogTitle>Editar Projeto</DialogTitle>
               <DialogDescription className="flex flex-col">
-                <span>Cuidado pra não fazer merda!</span>
+                <span>Atualize os campos abaixo se necessário</span>
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
@@ -200,6 +219,54 @@ export default function ProjectDetailsDialog({ data }: ProjectDetailsProps) {
                       )}
                     />
                   </div>
+                  <FormField
+                    control={form.control}
+                    name="examDate"
+                    render={({ field, fieldState }) => {
+                      return (
+                        <FormItem className="mt-[10px] flex flex-col">
+                          <Label htmlFor="examDate">Data da prova</Label>
+                          <Popover
+                            open={openCalendar}
+                            onOpenChange={setOpenCalendar}
+                          >
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={'outline'}
+                                  className={cn(
+                                    !field.value && 'text-muted-foreground',
+                                    fieldState.error && 'border-red-400'
+                                  )}
+                                >
+                                  {field.value ? (
+                                    format(field.value, 'PPP', { locale: ptBR })
+                                  ) : (
+                                    <span>Escolha uma data</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={(date) => {
+                                  field.onChange(date)
+                                  setOpenCalendar(false)
+                                }}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </FormItem>
+                      )
+                    }}
+                  />
                 </div>
 
                 <DialogFooter className="mt-6">
